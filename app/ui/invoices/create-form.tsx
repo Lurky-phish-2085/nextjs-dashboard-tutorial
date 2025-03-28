@@ -10,7 +10,7 @@ import {
   UserCircleIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useCallback, useEffect, useRef } from "react";
 
 export default function Form({ customers }: { customers: CustomerField[] }) {
   const initialState: State = {
@@ -22,15 +22,15 @@ export default function Form({ customers }: { customers: CustomerField[] }) {
   const [state, formAction] = useActionState(createInvoice, initialState);
 
   const selectRef = useRef<HTMLSelectElement>(null);
-  const updateSelectedCustomer = () => {
+  const updateSelectedCustomer = useCallback(() => {
     if (selectRef.current) {
       selectRef.current.value = state.formData?.customerId?.toString() ?? "";
     }
-  };
+  }, [state.formData?.customerId]);
 
   useEffect(() => {
     updateSelectedCustomer();
-  }, [state]);
+  }, [state, updateSelectedCustomer]);
 
   return (
     <form action={formAction}>
